@@ -401,6 +401,143 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.dream-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dream-list-header h2 {
+  margin: 0;
+}
+
+.list-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.batch-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(167, 139, 250, 0.1);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #cbd5e1;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.select-all input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #a78bfa;
+}
+
+.batch-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-batch {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-batch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-batch:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn-favorite {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.btn-archive {
+  background: linear-gradient(90deg, #6366f1, #4f46e5);
+}
+
+.btn-material {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.btn-delete {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.dream-item.selected {
+  background: rgba(167, 139, 250, 0.15);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.dream-item.is-archived {
+  opacity: 0.6;
+}
+
+.dream-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dream-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dream-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #a78bfa;
+}
+
+.dream-tags {
+  display: flex;
+  gap: 4px;
+}
+
+.tag {
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.tag-favorite {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.tag-archived {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.tag-material {
+  background: rgba(16, 185, 129, 0.2);
+}
+
 @media (max-width: 768px) {
   .stats-section {
     grid-template-columns: 1fr;
@@ -416,5 +553,21 @@ body {
 
   .username {
     display: none;
+  }
+
+  .batch-toolbar {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .batch-buttons {
+    width: 100%;
+  }
+
+  .btn-batch {
+    flex: 1;
+    min-width: calc(50% - 5px);
+    padding: 10px;
   }
 }

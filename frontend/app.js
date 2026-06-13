@@ -16,6 +16,9 @@ createApp({
     const randomDream = ref(null);
     const monthlyStats = ref({ count: 0, avgLucidity: 0 });
 
+    const batchMode = ref(false);
+    const selectedIds = ref([]);
+
     const now = new Date();
     const selectedYear = ref(now.getFullYear());
     const selectedMonth = ref(now.getMonth() + 1);
@@ -193,6 +196,76 @@ createApp({
       fetchMonthlyStats();
     }
 
+    function toggleBatchMode() {
+      batchMode.value = !batchMode.value;
+      if (!batchMode.value) {
+        selectedIds.value = [];
+      }
+    }
+
+    function toggleSelect(id) {
+      const index = selectedIds.value.indexOf(id);
+      if (index > -1) {
+        selectedIds.value.splice(index, 1);
+      } else {
+        selectedIds.value.push(id);
+      }
+    }
+
+    const isAllSelected = computed(() => {
+      return dreams.value.length > 0 && selectedIds.value.length === dreams.value.length;
+    });
+
+    function toggleSelectAll() {
+      if (isAllSelected.value) {
+        selectedIds.value = [];
+      } else {
+        selectedIds.value = dreams.value.map(d => d.id);
+      }
+    }
+
+    async function batchAction(action) {
+      if (selectedIds.value.length === 0) {
+        alert('请先选择要操作的梦境');
+        return;
+      }
+
+      let confirmMsg = '';
+      switch (action) {
+        case 'favorite':
+          confirmMsg = `确定要收藏选中的 ${selectedIds.value.length} 条梦境吗？`;
+          break;
+        case 'archive':
+          confirmMsg = `确定要归档选中的 ${selectedIds.value.length} 条梦境吗？`;
+          break;
+        case 'delete':
+          confirmMsg = `确定要删除选中的 ${selectedIds.value.length} 条梦境吗？此操作不可恢复！`;
+          break;
+        case 'materialBox':
+          confirmMsg = `确定要将选中的 ${selectedIds.value.length} 条梦境加入素材箱吗？`;
+          break;
+      }
+
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        await apiRequest('/dreams/batch', {
+          method: 'PUT',
+          body: JSON.stringify({
+            ids: selectedIds.value,
+            action: action
+          })
+        });
+
+        alert(`操作成功，共处理 ${selectedIds.value.length} 条梦境`);
+        selectedIds.value = [];
+        batchMode.value = false;
+        loadData();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
     function createWhiteNoise() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContext = new AudioContext();
@@ -276,7 +349,14 @@ createApp({
       selectedYear,
       selectedMonth,
       yearOptions,
-      onMonthChange
+      onMonthChange,
+      batchMode,
+      selectedIds,
+      toggleBatchMode,
+      toggleSelect,
+      isAllSelected,
+      toggleSelectAll,
+      batchAction
     };
   }
 }).mount('#app');

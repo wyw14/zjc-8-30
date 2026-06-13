@@ -114,12 +114,54 @@
         </div>
 
         <div class="card">
-          <h2>📚 梦境列表</h2>
+          <div class="dream-list-header">
+            <h2>📚 梦境列表</h2>
+            <div class="list-actions">
+              <button v-if="!batchMode" class="btn-icon" @click="toggleBatchMode">
+                ✅ 批量管理
+              </button>
+              <button v-else class="btn-icon active" @click="toggleBatchMode">
+                ❌ 退出批量
+              </button>
+            </div>
+          </div>
+
+          <div v-if="batchMode" class="batch-toolbar">
+            <label class="select-all">
+              <input type="checkbox" :checked="isAllSelected" @click="toggleSelectAll">
+              全选 ({{ selectedIds.length }}/{{ dreams.length }})
+            </label>
+            <div class="batch-buttons">
+              <button class="btn-batch btn-favorite" @click="batchAction('favorite')" :disabled="selectedIds.length === 0">
+                ⭐ 收藏
+              </button>
+              <button class="btn-batch btn-archive" @click="batchAction('archive')" :disabled="selectedIds.length === 0">
+                📁 归档
+              </button>
+              <button class="btn-batch btn-material" @click="batchAction('materialBox')" :disabled="selectedIds.length === 0">
+                🎨 素材箱
+              </button>
+              <button class="btn-batch btn-delete" @click="batchAction('delete')" :disabled="selectedIds.length === 0">
+                🗑️ 删除
+              </button>
+            </div>
+          </div>
+
           <div v-if="dreams.length === 0" class="empty-dream">还没有记录梦境</div>
           <div v-else class="dream-list">
-            <div v-for="dream in dreams" :key="dream.id" class="dream-item">
+            <div v-for="dream in dreams" :key="dream.id" class="dream-item" :class="{ selected: selectedIds.includes(dream.id), 'is-archived': dream.archived }">
               <div class="dream-header">
-                <span class="dream-date">{{ dream.date }}</span>
+                <div class="dream-header-left">
+                  <span v-if="batchMode" class="dream-checkbox">
+                    <input type="checkbox" :checked="selectedIds.includes(dream.id)" @change="toggleSelect(dream.id)">
+                  </span>
+                  <span class="dream-date">{{ dream.date }}</span>
+                  <span class="dream-tags">
+                    <span v-if="dream.favorite" class="tag tag-favorite" title="已收藏">⭐</span>
+                    <span v-if="dream.archived" class="tag tag-archived" title="已归档">📁</span>
+                    <span v-if="dream.inMaterialBox" class="tag tag-material" title="素材箱">🎨</span>
+                  </span>
+                </div>
                 <span class="dream-lucidity">
                   <span v-for="n in 5" :key="n" class="star">{{ n <= dream.lucidity ? '★' : '☆' }}</span>
                 </span>
